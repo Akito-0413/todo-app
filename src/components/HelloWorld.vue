@@ -1,41 +1,64 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+    <h2>Todoアプリ</h2>
+    <h3>タスクを登録してください</h3>
+    <p>名前</p>
+    <input v-model="todo.name" />
+    <p>タスク</p>
+    <input v-model="todo.task" />
+    <p>締切</p>
+    <input v-model="todo.deadline" />
+    <br /><br />
+    <button style="submit" v-on:click="create">作成</button>
+    <hr />
+    <button style="submit" v-on:click="show">過去のタスク一覧</button>
+    <div v-for="todo in todos" v-bind:key="todo.name">
+      <ul>
+        <li>名前: {{ todo.name }}</li>
+        <br />
+        <li>タスク: {{ todo.task }}</li>
+        <br />
+        <li>締切: {{ todo.deadline }}</li>
+        <br />
+      </ul>
+      <button style="submit" v-on:click="deleteTodo(todo)">完了</button>
+      <hr />
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
+  name: "HelloWorld",
+  data: () => ({
+    todos: [{ name: "", task: "", deadline: "" }],
+    todo: {
+      name: "",
+      task: "",
+      deadline: "",
+    },
+    name: "todos",
+  }),
+  methods: {
+    show() {
+      const data = localStorage.getItem(this.name)
+      this.todos = JSON.parse(data)
+    },
+    create() {
+      this.todos.push(this.todo)
+      localStorage.setItem(this.name, JSON.stringify(this.todos))
+
+      this.todo = {
+        name: "",
+        task: "",
+        deadline: "",
+      }
+    },
+    deleteTodo(todo) {
+      this.todos = this.todos.filter((item) => item.name !== todo.name)
+      localStorage.setItem(this.name, JSON.stringify(this.todos))
+    },
+  },
 }
 </script>
 
